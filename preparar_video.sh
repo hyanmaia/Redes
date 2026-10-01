@@ -1,0 +1,105 @@
+#!/bin/bash
+
+echo "Ligando Daemons OSPF..."
+for i in {1..5}; do
+  docker exec clab-ga-roteamento-r$i sed -i "s/ospfd=no/ospfd=yes/g" /etc/frr/daemons
+  docker exec -d clab-ga-roteamento-r$i /usr/lib/frr/ospfd
+done
+
+echo "Configurando Roteador 1..."
+docker exec -i clab-ga-roteamento-r1 vtysh << 'EOF'
+configure terminal
+interface eth1
+ ip address 10.0.12.1/30
+interface eth2
+ ip address 10.0.51.2/30
+interface eth3
+ ip address 10.0.13.1/30
+interface eth4
+ ip address 192.168.1.1/24
+router ospf
+ ospf router-id 1.1.1.1
+ network 10.0.0.0/8 area 0
+ network 192.168.1.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando Roteador 2..."
+docker exec -i clab-ga-roteamento-r2 vtysh << 'EOF'
+configure terminal
+interface eth1
+ ip address 10.0.12.2/30
+interface eth2
+ ip address 10.0.23.1/30
+interface eth3
+ ip address 10.0.25.1/30
+interface eth4
+ ip address 192.168.2.1/24
+router ospf
+ ospf router-id 2.2.2.2
+ network 10.0.0.0/8 area 0
+ network 192.168.2.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando Roteador 3..."
+docker exec -i clab-ga-roteamento-r3 vtysh << 'EOF'
+configure terminal
+interface eth1
+ ip address 10.0.23.2/30
+interface eth2
+ ip address 10.0.34.1/30
+interface eth3
+ ip address 10.0.13.2/30
+interface eth4
+ ip address 192.168.3.1/24
+router ospf
+ ospf router-id 3.3.3.3
+ network 10.0.0.0/8 area 0
+ network 192.168.3.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando Roteador 4..."
+docker exec -i clab-ga-roteamento-r4 vtysh << 'EOF'
+configure terminal
+interface eth1
+ ip address 10.0.34.2/30
+interface eth2
+ ip address 10.0.45.1/30
+interface eth4
+ ip address 192.168.4.1/24
+router ospf
+ ospf router-id 4.4.4.4
+ network 10.0.0.0/8 area 0
+ network 192.168.4.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando Roteador 5..."
+docker exec -i clab-ga-roteamento-r5 vtysh << 'EOF'
+configure terminal
+interface eth1
+ ip address 10.0.45.2/30
+interface eth2
+ ip address 10.0.51.1/30
+interface eth3
+ ip address 10.0.25.2/30
+interface eth4
+ ip address 192.168.5.1/24
+router ospf
+ ospf router-id 5.5.5.5
+ network 10.0.0.0/8 area 0
+ network 192.168.5.0/24 area 0
+end
+write memory
+EOF
+
+echo "Corrigindo rotas dos PCs de acesso..."
+docker exec clab-ga-roteamento-pc1 sh -c 'ip addr add 192.168.1.10/24 dev eth1; ip route del default; ip route add default via 192.168.1.1 dev eth1' 2>/dev/null
+docker exec clab-ga-roteamento-pc5 sh -c 'ip addr add 192.168.5.10/24 dev eth1; ip route del default; ip route add default via 192.168.5.1 dev eth1' 2>/dev/null
+echo "Laboratorio 100% pronto!"

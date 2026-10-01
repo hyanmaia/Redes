@@ -1,0 +1,61 @@
+#!/bin/bash
+
+echo "Configurando OSPF no Roteador 1..."
+docker exec -i clab-ga-roteamento-r1 vtysh << 'EOF'
+configure terminal
+router ospf
+ ospf router-id 1.1.1.1
+ network 10.0.0.0/8 area 0
+ network 192.168.1.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando OSPF no Roteador 2..."
+docker exec -i clab-ga-roteamento-r2 vtysh << 'EOF'
+configure terminal
+router ospf
+ ospf router-id 2.2.2.2
+ network 10.0.0.0/8 area 0
+ network 192.168.2.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando OSPF no Roteador 3..."
+docker exec -i clab-ga-roteamento-r3 vtysh << 'EOF'
+configure terminal
+router ospf
+ ospf router-id 3.3.3.3
+ network 10.0.0.0/8 area 0
+ network 192.168.3.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando OSPF no Roteador 4..."
+docker exec -i clab-ga-roteamento-r4 vtysh << 'EOF'
+configure terminal
+router ospf
+ ospf router-id 4.4.4.4
+ network 10.0.0.0/8 area 0
+ network 192.168.4.0/24 area 0
+end
+write memory
+EOF
+
+echo "Configurando OSPF no Roteador 5..."
+docker exec -i clab-ga-roteamento-r5 vtysh << 'EOF'
+configure terminal
+router ospf
+ ospf router-id 5.5.5.5
+ network 10.0.0.0/8 area 0
+ network 192.168.5.0/24 area 0
+end
+write memory
+EOF
+
+echo "Corrigindo rotas dos PCs de acesso..."
+docker exec clab-ga-roteamento-pc1 sh -c 'ip route del default; ip route add default via 192.168.1.1 dev eth1' 2>/dev/null
+docker exec clab-ga-roteamento-pc5 sh -c 'ip route del default; ip route add default via 192.168.5.1 dev eth1' 2>/dev/null
+echo "OSPF e redes de acesso configurados com sucesso!"
