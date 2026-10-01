@@ -1,7 +1,5 @@
 # Trabalho de Sistemas Operacionais: Roteamento Dinâmico
 
-**Vídeo da apresentação:** [COLOQUE O LINK DO VÍDEO AQUI]
-
 ## Sobre o Projeto
 Repositório com os arquivos do trabalho de Fundamentos de Sistemas Operacionais (Unisinos). O objetivo foi montar um laboratório virtual para testar na prática como protocolos de roteamento (RIP e OSPF) reagem à queda de links físicos, além da implementação de um algoritmo próprio de roteamento operando no user-space.
 
