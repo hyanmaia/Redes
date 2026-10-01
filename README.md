@@ -1,5 +1,7 @@
 # Trabalho de Sistemas Operacionais: Roteamento Dinâmico
 
+Aluno: Hyan Motter Maia 
+
 ## Sobre o Projeto
 Repositório com os arquivos do trabalho de Fundamentos de Sistemas Operacionais (Unisinos). O objetivo foi montar um laboratório virtual para testar na prática como protocolos de roteamento (RIP e OSPF) reagem à queda de links físicos, além da implementação de um algoritmo próprio de roteamento operando no user-space.
 
@@ -28,7 +30,9 @@ graph TD
     R3 ===|10.0.34.0/30| R4
     R4 ===|10.0.45.0/30| R5
 
-    Tecnologias e Pré-requisitos
+    
+    
+Tecnologias e Pré-requisitos
     
 O laboratório foi montado e testado nativamente no CachyOS (Linux), mas é compatível com qualquer distribuição recente. É necessário ter instalado:
 
@@ -69,4 +73,4 @@ Para encerrar os processos, destruir os containers e remover as interfaces virtu
 Bash
 sudo containerlab destroy -t topologia.yaml
 
-Autor: Hyan Motter Maia
+
